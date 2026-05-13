@@ -7,6 +7,7 @@ class StudentNoteModel {
   final DateTime date;
   final String para;
   final String remarks;
+  final String? imageUrl;
 
   StudentNoteModel({
     required this.docId,
@@ -15,6 +16,7 @@ class StudentNoteModel {
     required this.date,
     required this.para,
     required this.remarks,
+    this.imageUrl,
   });
 
   Map<String, dynamic> toMap() {
@@ -24,6 +26,7 @@ class StudentNoteModel {
       'date': Timestamp.fromDate(date),
       'para': para,
       'remarks': remarks,
+      'imageUrl': imageUrl,
     };
   }
 
@@ -36,6 +39,7 @@ class StudentNoteModel {
       date: (data['date'] as Timestamp).toDate(),
       para: data['para'],
       remarks: data['remarks'],
+      imageUrl: data['imageUrl'],
     );
   }
 }

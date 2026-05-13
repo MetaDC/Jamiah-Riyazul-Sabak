@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FBFireStore {
   static final fb = FirebaseFirestore.instance;
@@ -8,4 +9,9 @@ class FBFireStore {
   static final teachers = fb.collection('teachers');
   static final courses = fb.collection('course');
   static final studentNotes = fb.collection('studentNotes');
+}
+
+class FBStorage {
+  static final storage = FirebaseStorage.instance;
+  static final studentNotes = storage.ref().child('studentNotes');
 }

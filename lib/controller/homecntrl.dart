@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:jamiah_riyazul_sabak/model/classmodel.dart';
 import 'package:jamiah_riyazul_sabak/model/studentnotemodel.dart';
 import 'package:jamiah_riyazul_sabak/shared/const/firbase.dart';
 import '../model/studentmodel.dart';
+import '../services/image_picker.dart';
 
 class HomeController extends GetxController {
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? classStream;
@@ -89,11 +91,35 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<String?> uploadImage(SelectedImage image) async {
+    try {
+      final String extension = image.extension.toLowerCase();
+      final String contentType = extension == 'jpg' || extension == 'jpeg'
+          ? 'image/jpeg'
+          : 'image/$extension';
+
+      final ref = FBStorage.studentNotes.child(
+        '${DateTime.now().millisecondsSinceEpoch}.${image.extension}',
+      );
+      final uploadTask = await ref.putData(
+        image.uInt8List,
+        SettableMetadata(contentType: contentType),
+      );
+      final String url = await uploadTask.ref.getDownloadURL();
+      debugPrint('Successfully uploaded image: $url');
+      return url;
+    } catch (e) {
+      debugPrint('Error uploading image: $e');
+      return null;
+    }
+  }
+
   Future<void> addRecord({
     required Studentmodel student,
     required String date,
     required String para,
     required String remarks,
+    String? imageUrl,
   }) async {
     final record = StudentNoteModel(
       docId: '',
@@ -102,6 +128,7 @@ class HomeController extends GetxController {
       date: DateTime.parse(date),
       para: para,
       remarks: remarks,
+      imageUrl: imageUrl,
     );
 
     await FBFireStore.studentNotes.add(record.toMap());

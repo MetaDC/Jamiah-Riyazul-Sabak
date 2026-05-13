@@ -14,6 +14,17 @@ class StudentSearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (controller) {
+        // Filter for Hifz students only
+        final hifzStudents = controller.filteredStudents.where((student) {
+          final className =
+              controller.allClasses
+                  .firstWhereOrNull((c) => c.classId == student.currentDeeniyat)
+                  ?.className ??
+              '';
+          return className.toLowerCase().contains('hifz') ||
+              className.toLowerCase().contains('hafiz');
+        }).toList();
+
         return Scaffold(
           backgroundColor: const Color(0xFFF5F7FA),
           body: CustomScrollView(
@@ -114,7 +125,7 @@ class StudentSearchPage extends StatelessWidget {
                             size: 24,
                           ),
                         ),
-                        suffixIcon: controller.filteredStudents.isNotEmpty
+                        suffixIcon: hifzStudents.isNotEmpty
                             ? Container(
                                 padding: const EdgeInsets.all(8),
                                 child: Container(
@@ -129,7 +140,7 @@ class StudentSearchPage extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
-                                    '${controller.filteredStudents.length}',
+                                    '${hifzStudents.length}',
                                     style: const TextStyle(
                                       color: Color(0xFF1E3A5F),
                                       fontWeight: FontWeight.bold,
@@ -170,7 +181,7 @@ class StudentSearchPage extends StatelessWidget {
               ),
 
               // Results Count
-              if (controller.filteredStudents.isNotEmpty)
+              if (hifzStudents.isNotEmpty)
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -186,7 +197,7 @@ class StudentSearchPage extends StatelessWidget {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          '${controller.filteredStudents.length} ${controller.filteredStudents.length == 1 ? 'Student' : 'Students'} Found',
+                          '${hifzStudents.length} ${hifzStudents.length == 1 ? 'Student' : 'Students'} Found',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -199,20 +210,20 @@ class StudentSearchPage extends StatelessWidget {
                 ),
 
               // Student List or Empty State
-              controller.filteredStudents.isEmpty
+              hifzStudents.isEmpty
                   ? SliverFillRemaining(child: _buildEmptyState())
                   : SliverPadding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
-                          final student = controller.filteredStudents[index];
+                          final student = hifzStudents[index];
                           return _buildStudentCard(
                             context,
                             controller,
                             student,
                             index,
                           );
-                        }, childCount: controller.filteredStudents.length),
+                        }, childCount: hifzStudents.length),
                       ),
                     ),
             ],

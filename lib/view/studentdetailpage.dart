@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:jamiah_riyazul_sabak/shared/routes.dart';
+import 'dart:typed_data';
+import 'package:jamiah_riyazul_sabak/shared/const/firbase.dart';
 import '../controller/homecntrl.dart';
 import '../model/studentmodel.dart';
+import '../model/studentnotemodel.dart';
+import '../widgets/cross_platform_image.dart';
 
 class StudentDetailPage extends StatelessWidget {
   final Studentmodel student;
@@ -421,6 +426,16 @@ class StudentDetailPage extends StatelessWidget {
                               ),
                             ],
                           ),
+                        ),
+                      ],
+
+                      // Attached Image
+                      if (record.imageUrl != null &&
+                          record.imageUrl!.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: StorageImage(imageUrl: record.imageUrl!),
                         ),
                       ],
                     ],
